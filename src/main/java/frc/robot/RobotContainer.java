@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.JoystickDrive;
+import frc.robot.commands.vision.DriveToNote;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
@@ -27,6 +29,8 @@ public class RobotContainer {
   private ModuleIOSparkMax br;
   private JoystickDrive joystickDrive;
   private XboxController xboxController;
+  private DriveToNote driveToNote;
+  private VisionSubsystem visionSubsystem;
   public RobotContainer() {
     xboxController = new XboxController(0);
     gyroIO = new GyroIOPigeon2();
@@ -36,6 +40,9 @@ public class RobotContainer {
     br = new ModuleIOSparkMax(4);
     drive = new Drive(gyroIO,fl,fr,bl,br);
     joystickDrive = new JoystickDrive(drive,xboxController::getLeftY,xboxController::getLeftX,xboxController::getRightX);
+    drive.setDefaultCommand(joystickDrive);
+    visionSubsystem = new VisionSubsystem();
+    driveToNote = new DriveToNote(visionSubsystem,drive);
     configureBindings();
   }
 
@@ -49,6 +56,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    new Trigger(() -> xboxController.getAButton()).onTrue(driveToNote);
 
   }
 
