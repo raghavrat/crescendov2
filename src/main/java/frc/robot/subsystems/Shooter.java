@@ -11,18 +11,24 @@ public class Shooter extends SubsystemBase {
     private final CANSparkMax intakeMotor;
 
     private SparkLimitSwitch intakeLimitSwitch;
-    Shooter(){
+    public Shooter(){
         leadShoot = new CANSparkMax(1, CANSparkLowLevel.MotorType.kBrushless);
         followShoot = new CANSparkMax(2, CANSparkLowLevel.MotorType.kBrushless);
         followShoot.follow(leadShoot);
         intakeMotor = new CANSparkMax(3, CANSparkLowLevel.MotorType.kBrushless);
         intakeLimitSwitch = intakeMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
     }
-    public void groundIntake(double speed) {
+    public void startGroundIntake(double speed) {
         intakeMotor.set(-speed);
     }
     public void speakShoot(double speed) {
         intakeMotor.set(-speed);
         leadShoot.set(-speed);
+    }
+    public boolean isIntakeLimitSwitchPressed() {
+        return intakeLimitSwitch.isPressed();
+    }
+    public void setIntakeLimitSwitch (boolean bool) {
+        intakeLimitSwitch.enableLimitSwitch(bool);
     }
 }
